@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {  
+  --color-primary: #e3599a;
+  --color-secondary: #bc6ce8;
+}
+body {
+  background: transparent url('./bg.jpg') center center no-repeat;
+  background-size: cover;
+  min-height: 100dvh;
+}
+.btn {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding-block: 1rem;
+}
+.btn-bg {
+  background-image: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: #fff;
+}
