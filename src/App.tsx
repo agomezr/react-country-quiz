@@ -17,6 +17,36 @@ function App() {
     return arr[randomIndex];
   }
 
+/*
+  allOptions: array of al string options
+  toDelete: the string or option that must be excluded for the result
+  amount: the length of the return array
+*/
+  function getOptions(allOptions:string[], toDelete:string, amount:number = 3){
+    const options:string[] = [];
+    do {
+      const randomIndex = Math.floor(Math.random() * allOptions.length);
+      if (!options.includes(allOptions[randomIndex]) && allOptions[randomIndex] !== toDelete){
+        options.push(allOptions[randomIndex]);
+      }
+    } while (options.length < amount);
+    return options;
+  }
+
+  function shuffleArray(arr:string[]) {
+
+  const shuffleResult = [...arr];
+
+  for (let i = shuffleResult.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffleResult[i], shuffleResult[j]] = [shuffleResult[j], shuffleResult[i]];
+
+  }
+
+  return shuffleResult;
+}
+
   // https://restcountries.com/
   // https://restcountries.com/v3.1/name/spain
   // https://restcountries.com/v3.1/all?&fields=languages,capital,name,currencies,region,population,flags,cca2,cioc,timezones
@@ -51,16 +81,16 @@ function App() {
       // console.log(uniqueCurrencies);
       // 1. Get the Ramdom Country
       const randomCountryObject = getRandomArrayElement(res);
-      // console.log(randomCountryObject);
-      // console.log(randomCountryObject.name.common);
       
       // 2. Get country currency
       const countryCurrency = randomCountryObject.currencies[0].name;
-      console.log(countryCurrency);
-      // 3. Delete country currency from the unique Currencies
-      // 4. Get 3 ramdon currencies
-      // 5. Set the correct currency in the options array
-      // 6. Ramdomize the array
+
+      // 3. Get 3 ramdon currencies but not the correct one
+      let currenciesOptionsFake = getOptions(uniqueCurrencies, countryCurrency, 3);
+
+      // 4. Set the correct currency in the options array and shuffle it
+      currenciesOptionsFake.push(countryCurrency);
+      const currenciesOptions = shuffleArray(currenciesOptionsFake);
       // 7. Get the correct anwer position and set it to the question object
       
     })
