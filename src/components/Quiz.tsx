@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
+import type { Question } from "../interfaces/question";
 
-interface Question {
-  title: string,
-  answers: [string, string, string, string],
-  correct: number,
-  selected: number
-}
+
 
 function Quiz() {
   const [about, setAbout] = useState<string>('');

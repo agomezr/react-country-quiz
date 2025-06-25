@@ -3,49 +3,13 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import type { CurrenciesObject, CurrencyDetail } from './interfaces/country';
+import type { Question } from "./interfaces/question";
+import { getOptions, getRandomArrayElement, shuffleArray } from './lib/helpers';
 
 
 function App() {
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
-
-  function getRandomArrayElement<T>(arr: T[]): T | undefined {
-    if (arr.length === 0) {
-      return undefined; // Or throw an error, or return null, depending on desired behavior for empty arrays
-    }
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-  }
-
-/*
-  allOptions: array of al string options
-  toDelete: the string or option that must be excluded for the result
-  amount: the length of the return array
-*/
-  function getOptions(allOptions:string[], toDelete:string, amount:number = 3){
-    const options:string[] = [];
-    do {
-      const randomIndex = Math.floor(Math.random() * allOptions.length);
-      if (!options.includes(allOptions[randomIndex]) && allOptions[randomIndex] !== toDelete){
-        options.push(allOptions[randomIndex]);
-      }
-    } while (options.length < amount);
-    return options;
-  }
-
-  function shuffleArray(arr:string[]) {
-
-  const shuffleResult = [...arr];
-
-  for (let i = shuffleResult.length - 1; i > 0; i--) {
-
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffleResult[i], shuffleResult[j]] = [shuffleResult[j], shuffleResult[i]];
-
-  }
-
-  return shuffleResult;
-}
 
   // https://restcountries.com/
   // https://restcountries.com/v3.1/name/spain
@@ -59,39 +23,49 @@ function App() {
       //   return e.cioc;
       // })
       // setQuestions(filteredWithCioc) 
-      setQuestions(res);
+      // setQuestions(res);
 
+      const addQuestion = (newQuestion: Question) => {
+        setQuestions(prevQuestions => [...prevQuestions, newQuestion]);
+      };
 
-      // Currency options
-      const allCurrencies:string[] = [];
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      res.map((e:any) => {
-          const currenciesObject: CurrenciesObject = e.currencies;
-          if (Object.keys(currenciesObject).length > 0) {
-              const namesPotentiallyNested = Object.values(currenciesObject).map((currency:CurrencyDetail) => currency.name);
-              const allNamesFlat = namesPotentiallyNested.flat(Infinity);
-              allCurrencies.push(...allNamesFlat);
-          }
-      });
-
-      // Delete repeated currencies names
-      const uniqueCurrencies = [...new Set(allCurrencies)];
-
-      // console.log(uniqueCurrencies);
-      // 1. Get the Ramdom Country
+      // 0. Get the Ramdom Country
       const randomCountryObject = getRandomArrayElement(res);
       
-      // 2. Get country currency
-      const countryCurrency = randomCountryObject.currencies[0].name;
+      /* Currency section */
 
-      // 3. Get 3 ramdon currencies but not the correct one
-      let currenciesOptionsFake = getOptions(uniqueCurrencies, countryCurrency, 3);
+      // 1. Get country currency
+      // const countryCurrency = Object.values(randomCountryObject.currencies)[0].name;
 
-      // 4. Set the correct currency in the options array and shuffle it
-      currenciesOptionsFake.push(countryCurrency);
-      const currenciesOptions = shuffleArray(currenciesOptionsFake);
-      // 7. Get the correct anwer position and set it to the question object
+      // 2. Get 3 ramdon currencies but not the correct one
+      // const allCurrencies:string[] = [];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // res.map((e:any) => {
+      //     const currenciesObject: CurrenciesObject = e.currencies;
+      //     if (Object.keys(currenciesObject).length > 0) {
+      //         const namesPotentiallyNested = Object.values(currenciesObject).map((currency:CurrencyDetail) => currency.name);
+      //         const allNamesFlat = namesPotentiallyNested.flat(Infinity);
+      //         allCurrencies.push(...allNamesFlat);
+      //     }
+      // });
+      // Delete repeated currencies names
+      // const uniqueCurrencies = [...new Set(allCurrencies)];
+      // const currenciesOptionsFake = getOptions(uniqueCurrencies, countryCurrency, 3);
+
+      // 3. Set the correct currency in the options array and shuffle it
+      // currenciesOptionsFake.push(countryCurrency);
+      // const currenciesOptions = shuffleArray(currenciesOptionsFake);
+      
+      // 4. Build the question object
+      // const currencyQuestion = {
+      //   title: `What currency ${randomCountryObject.name.common} use?`,
+      //   answers: currenciesOptions,
+      //   correct: currenciesOptions.indexOf(countryCurrency),
+      //   selected: undefined
+      // }
+      const currencyQuestion = buildCurrencyQuestion(randomCountryObject,res);
+      addQuestion(currencyQuestion);
       
     })
     .catch(() => console.log('Something goes wrong with the API'));

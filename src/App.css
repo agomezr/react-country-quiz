@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 @theme {  
-  --color-primary: #e3599a;
-  --color-secondary: #bc6ce8;
+  --color-primary: #E65895;
+  --color-secondary: #BC6BE8;
+  --color-gray-dark: #393F6E;
+  --color-gray-darked: #343964;
+  --color-light: #E2E4F3;
+  --color-blue: #3E9FFF;
+  --color-red: #DD524C;
+  --color-gray: #8B8EAB;
+  --color-yellow: #FFECC8;
 }
 body {
   background: transparent url('./bg.jpg') center center no-repeat;
