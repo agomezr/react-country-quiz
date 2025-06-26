@@ -6,3 +6,10 @@ export interface CurrencyDetail {
 export interface CurrenciesObject {
   [key: string]: CurrencyDetail;
 }
+
+
+export interface CurrenciesList {
+  currencies: {
+    [key: string]: CurrenciesObject; 
+  }
+}

@@ -5,6 +5,8 @@ import './App.css'
 import type { CurrenciesObject, CurrencyDetail } from './interfaces/country';
 import type { Question } from "./interfaces/question";
 import { getOptions, getRandomArrayElement, shuffleArray } from './lib/helpers';
+import { buildCurrencyQuestion } from './lib/currencySection';
+import { buildCapitalQuestion } from './lib/capitalSection';
 
 
 function App() {
@@ -33,39 +35,16 @@ function App() {
       const randomCountryObject = getRandomArrayElement(res);
       
       /* Currency section */
-
-      // 1. Get country currency
-      // const countryCurrency = Object.values(randomCountryObject.currencies)[0].name;
-
-      // 2. Get 3 ramdon currencies but not the correct one
-      // const allCurrencies:string[] = [];
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // res.map((e:any) => {
-      //     const currenciesObject: CurrenciesObject = e.currencies;
-      //     if (Object.keys(currenciesObject).length > 0) {
-      //         const namesPotentiallyNested = Object.values(currenciesObject).map((currency:CurrencyDetail) => currency.name);
-      //         const allNamesFlat = namesPotentiallyNested.flat(Infinity);
-      //         allCurrencies.push(...allNamesFlat);
-      //     }
-      // });
-      // Delete repeated currencies names
-      // const uniqueCurrencies = [...new Set(allCurrencies)];
-      // const currenciesOptionsFake = getOptions(uniqueCurrencies, countryCurrency, 3);
-
-      // 3. Set the correct currency in the options array and shuffle it
-      // currenciesOptionsFake.push(countryCurrency);
-      // const currenciesOptions = shuffleArray(currenciesOptionsFake);
-      
-      // 4. Build the question object
-      // const currencyQuestion = {
-      //   title: `What currency ${randomCountryObject.name.common} use?`,
-      //   answers: currenciesOptions,
-      //   correct: currenciesOptions.indexOf(countryCurrency),
-      //   selected: undefined
-      // }
       const currencyQuestion = buildCurrencyQuestion(randomCountryObject,res);
       addQuestion(currencyQuestion);
+      console.log(currencyQuestion);
+
+      /* Currency section */
+      const capitalQuestion = buildCapitalQuestion(randomCountryObject,res);
+      addQuestion(capitalQuestion);
+      console.log(capitalQuestion);
+
+      
       
     })
     .catch(() => console.log('Something goes wrong with the API'));
@@ -80,15 +59,28 @@ function App() {
       <div className='mx-auto max-w-3xl px-2'>
 
         <h1 className='text-primary mb-3'>Ejemplo</h1>
-        { /*(questions.length > 0) &&
-          questions.map((q: any) => {
-            // if (!q.cioc) return <p>{q.name.common} no tiene cioc</p>
+        <div >
+        { (questions.length > 0) &&
+          questions.map((q: Question) => {
+            
             return (
-              <p key={q.name.common.replace(/\s/g, '')}>{q.name.common}</p>
+              <div key={q.title.replace(/\s/g, '')} className='mb-3'>
+              <p>{q.title}</p>
+              <ul className='list-group'>
+                {
+                  q.answers.map((item) => {
+                    return(<li key={item.replace(/\s/g, '')} className='list-item'>{item}</li>)
+                  })
+                }
+              </ul>
+              <p>Correct position: {q.correct}</p>
+              </div>
             )
           })
-        */}
+          
         
+        }
+        </div>
         <a className='btn btn-bg'>
           Respuesta
         </a>

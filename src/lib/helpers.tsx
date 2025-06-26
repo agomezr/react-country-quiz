@@ -11,7 +11,7 @@
     toDelete: the string or option that must be excluded for the result
     amount: the length of the return array
   */
-  export function getOptions(allOptions:string[], toDelete:string, amount:number = 3){
+  export function getOptions(allOptions:string[], toDelete:string, amount:number = 3):string[]{
     const options:string[] = [];
     do {
       const randomIndex = Math.floor(Math.random() * allOptions.length);
@@ -22,7 +22,7 @@
     return options;
   }
 
-  export function shuffleArray(arr:string[]) {
+  export function shuffleArray(arr:string[]):string[] {
     const shuffleResult = [...arr];
     for (let i = shuffleResult.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
