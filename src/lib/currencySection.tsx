@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CurrenciesList, CurrenciesObject, CurrencyDetail } from "../interfaces/country";
-import type { Question } from "../interfaces/question";
+import type { Ask } from "../interfaces/ask";
 import { getOptions, shuffleArray } from "./helpers";
 
-export function buildCurrencyQuestion(countryObject:any, allCountries:any):Question{
+export function buildCurrencyQuestion(countryObject:any, allCountries:any):Ask{
 
     // 1. Get country currency
     const countryCurrency = Object.values(countryObject.currencies as CurrenciesList)[0].name;
@@ -29,6 +29,7 @@ export function buildCurrencyQuestion(countryObject:any, allCountries:any):Quest
     const currenciesOptions = shuffleArray(currenciesOptionsFake);
           
     return {
+        id: 'currency',
         title: `What currency ${countryObject.name.common} use?`,
         answers: currenciesOptions,
         correct: currenciesOptions.indexOf(countryCurrency),

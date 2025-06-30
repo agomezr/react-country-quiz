@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Question } from "../interfaces/question";
+import type { Ask } from "../interfaces/ask";
 import { getOptions, shuffleArray } from "./helpers";
 
-export function buildCapitalQuestion(countryObject:any, allCountries:any):Question{
+export function buildCapitalQuestion(countryObject:any, allCountries:any):Ask{
 
     // 1. Get country capital
     const countryCapital = countryObject.capital[0];
@@ -20,6 +20,7 @@ export function buildCapitalQuestion(countryObject:any, allCountries:any):Questi
     const capitalsOptions = shuffleArray(capitalsOptionsFake);
           
     return {
+        id: 'name',
         title: `What ${countryObject.name.common} capital is?`,
         answers: capitalsOptions,
         correct: capitalsOptions.indexOf(countryCapital),

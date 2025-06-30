@@ -2,7 +2,7 @@
 // import viteLogo from '/vite.svg'
 import { useEffect, useState } from 'react'
 import './App.css'
-import type { Question } from "./interfaces/question";
+import type { Ask } from "./interfaces/ask";
 import { getRandomArrayElement } from './lib/helpers';
 import { buildCurrencyQuestion } from './lib/currencySection';
 import { buildCapitalQuestion } from './lib/capitalSection';
@@ -10,9 +10,9 @@ import { buildRegionQuestion } from './lib/regionSection';
 
 
 function App() {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<Ask[]>([]);
 
-  const addQuestion = (newQuestion: Question) => {
+  const addQuestion = (newQuestion: Ask) => {
       setQuestions(prevQuestions => [...prevQuestions, newQuestion]);
     };
   // https://restcountries.com/
@@ -54,7 +54,7 @@ function App() {
         <h1 className='text-primary mb-3'>Ejemplo</h1>
         <div >
         { (questions.length > 0) &&
-          questions.map((q: Question) => {
+          questions.map((q: Ask) => {
             
             return (
               <div key={q.title.replace(/\s/g, '')} className='mb-3'>

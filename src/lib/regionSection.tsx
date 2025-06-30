@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Question } from "../interfaces/question";
+import type { Ask } from "../interfaces/ask";
 import { getOptions, shuffleArray } from "./helpers";
 
-export function buildRegionQuestion(countryObject:any, allCountries:any):Question{
+export function buildRegionQuestion(countryObject:any, allCountries:any):Ask{
 
     // 1. Get country region
     const countryRegion = countryObject.region;
@@ -23,6 +23,7 @@ export function buildRegionQuestion(countryObject:any, allCountries:any):Questio
     const regionOptions = shuffleArray(regionsOptionsFake);
           
     return {
+        id: 'region',
         title: `Where is ${countryObject.name.common}?`,
         answers: regionOptions,
         correct: regionOptions.indexOf(countryRegion),
