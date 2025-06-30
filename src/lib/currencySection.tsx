@@ -11,7 +11,6 @@ export function buildCurrencyQuestion(countryObject:any, allCountries:any):Quest
     // 2. Get 3 ramdon currencies but not the correct one
     const allCurrencies:string[] = [];
     
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     allCountries.map((e:any) => {
         const currenciesObject: CurrenciesObject = e.currencies;
         if (Object.keys(currenciesObject).length > 0) {

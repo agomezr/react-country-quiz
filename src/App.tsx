@@ -2,17 +2,19 @@
 // import viteLogo from '/vite.svg'
 import { useEffect, useState } from 'react'
 import './App.css'
-import type { CurrenciesObject, CurrencyDetail } from './interfaces/country';
 import type { Question } from "./interfaces/question";
-import { getOptions, getRandomArrayElement, shuffleArray } from './lib/helpers';
+import { getRandomArrayElement } from './lib/helpers';
 import { buildCurrencyQuestion } from './lib/currencySection';
 import { buildCapitalQuestion } from './lib/capitalSection';
+import { buildRegionQuestion } from './lib/regionSection';
 
 
 function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
 
-
+  const addQuestion = (newQuestion: Question) => {
+      setQuestions(prevQuestions => [...prevQuestions, newQuestion]);
+    };
   // https://restcountries.com/
   // https://restcountries.com/v3.1/name/spain
   // https://restcountries.com/v3.1/all?&fields=languages,capital,name,currencies,region,population,flags,cca2,cioc,timezones
@@ -21,31 +23,22 @@ function App() {
     fetch('https://restcountries.com/v3.1/all?&fields=languages,capital,name,currencies,region,population,flags,cca2,borders,timezones')
     .then(res => res.json())
     .then((res) => { 
-      // const filteredWithCioc = res.filter((e) => {
-      //   return e.cioc;
-      // })
-      // setQuestions(filteredWithCioc) 
-      // setQuestions(res);
-
-      const addQuestion = (newQuestion: Question) => {
-        setQuestions(prevQuestions => [...prevQuestions, newQuestion]);
-      };
-
+  
       // 0. Get the Ramdom Country
       const randomCountryObject = getRandomArrayElement(res);
       
       /* Currency section */
-      const currencyQuestion = buildCurrencyQuestion(randomCountryObject,res);
+      const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
       addQuestion(currencyQuestion);
-      console.log(currencyQuestion);
 
-      /* Currency section */
-      const capitalQuestion = buildCapitalQuestion(randomCountryObject,res);
+      /* Capital section */
+      const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
       addQuestion(capitalQuestion);
-      console.log(capitalQuestion);
 
-      
-      
+      /* Region section */
+      const regionQuestion = buildRegionQuestion(randomCountryObject, res);
+      addQuestion(regionQuestion);
+
     })
     .catch(() => console.log('Something goes wrong with the API'));
 
