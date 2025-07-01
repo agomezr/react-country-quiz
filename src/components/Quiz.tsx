@@ -117,7 +117,7 @@ function Quiz() {
           questions.map((q:Ask, i:number) => {
             let active = '';
             if (currentQuestion === i) { active = 'active' }
-            return <div className={active}> <Question key={q.id} question={q} userAnswer={userAnswers[i]} /></div>
+            return (<div key={q.id} className={active}><Question question={q} userAnswer={userAnswers[i]} /></div>)
           } )
         }
       </div>
