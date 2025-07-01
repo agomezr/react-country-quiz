@@ -23,7 +23,7 @@ export function buildRegionQuestion(countryObject:any, allCountries:any):Ask{
     const regionOptions = shuffleArray(regionsOptionsFake);
           
     return {
-        id: 'region',
+        id: 'region-question',
         title: `Where is ${countryObject.name.common}?`,
         answers: regionOptions,
         correct: regionOptions.indexOf(countryRegion),

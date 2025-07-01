@@ -20,7 +20,7 @@ export function buildCapitalQuestion(countryObject:any, allCountries:any):Ask{
     const capitalsOptions = shuffleArray(capitalsOptionsFake);
           
     return {
-        id: 'name',
+        id: 'capital-question',
         title: `What ${countryObject.name.common} capital is?`,
         answers: capitalsOptions,
         correct: capitalsOptions.indexOf(countryCapital),

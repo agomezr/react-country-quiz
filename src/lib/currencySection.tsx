@@ -29,7 +29,7 @@ export function buildCurrencyQuestion(countryObject:any, allCountries:any):Ask{
     const currenciesOptions = shuffleArray(currenciesOptionsFake);
           
     return {
-        id: 'currency',
+        id: 'currency-question',
         title: `What currency ${countryObject.name.common} use?`,
         answers: currenciesOptions,
         correct: currenciesOptions.indexOf(countryCurrency),
