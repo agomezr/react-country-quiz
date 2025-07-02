@@ -1,26 +1,30 @@
 import type { Ask } from "../interfaces/ask";
 
-function Option({color='bg-yellow', text} : {color:string, text:string}){
- return (
-  <button className={`w-full sm:w-1/2 lg:w-1/4 btn p-4 ${color}`} >
-    {text}
-  </button>
- )
-}
-
-function Question({ question, userAnswer}:
-  { question:Ask, userAnswer:number}) {
-  return <div className="question container w-full">
+function Question({ question, index, userAnswer, handleAnswer}:
+  { question:Ask, index:number, userAnswer:number|undefined, handleAnswer:(questionIndex: number, answerIndex: number) => void}) {
+  return <div className="question container mx-auto">
       <div>
-        <p className="text-center"> {question.title} </p>
-        <div className="flex flex-wrap">
+        <p className="text-center mb-3 font-extrabold"> {question.title} </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 align-center justify-center max-w-lg mx-auto">
           {
             question.answers.map((e:string, i:number) => {
               const optionKey = `${question.id}-${i}`;
-              let color = 'bg-blue';
-              if (userAnswer === question.correct){ color = 'bg-green';}
+              let color = 'bg-blue-500';
+              if (userAnswer === question.correct && i === userAnswer){ color = 'bg-green-500'; }
                 
-              return (<Option key={optionKey} color={color} text={e}/>)
+              return (
+                <button key={optionKey} className={`btn ${color}`} 
+                  onClick={()=> {
+                    if (userAnswer !== undefined){
+                      console.log('Llamada a handleAnswer');
+                      handleAnswer(index, i);
+                    } else {
+                      console.log('Pregunta ya respondida');
+                    }
+                    }} >
+                  {e}
+                </button>
+              )
             })
           }
         </div>

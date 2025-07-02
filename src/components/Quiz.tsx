@@ -12,7 +12,7 @@ function Quiz() {
   // const [about, setAbout] = useState<string>('');
   const [questions, setQuestions] = useState<Ask[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [userAnswers, setUserAnswers] = useState<number[]>([]);
+  const [userAnswers, setUserAnswers] = useState<(number|undefined)[]>([]);
   const [showResult, setShowResult] = useState<boolean>(false);
 
   // const addQuestion = (newQuestion: Ask) => {
@@ -44,6 +44,7 @@ function Quiz() {
       // addQuestion(regionQuestion);
 
       setQuestions(buildsQuestions);
+      setUserAnswers(new Array(buildsQuestions.length+1).fill(undefined))
 
     })
     .catch(() => console.log('Something goes wrong with the API'));
@@ -56,12 +57,8 @@ function Quiz() {
   type HandleAnswerFunction = (questionIndex: number, answerIndex: number) => void;
   const handleAnswer:HandleAnswerFunction = (questionIndex, answerIndex) => {
     // Update user's answer for the current question
-    console.log('questionIndex');
-    console.log(questionIndex);
-    console.log('answerIndex');
-    console.log(answerIndex);
-    const newAnswers = [...userAnswers]; // Crea una copia del array actual
-    newAnswers[questionIndex] = answerIndex; // Actualiza la respuesta en la posición correcta
+    const newAnswers = [...userAnswers]; 
+    newAnswers[questionIndex] = answerIndex; 
     setUserAnswers(newAnswers);
 
     const newQuestions = [...questions];
@@ -106,9 +103,15 @@ function Quiz() {
       <p>
         Current question {currentQuestion}
       </p>
-      <p>
-        {/* User answers {userAnswers} */}
-      </p>
+      <div>
+       User answers 
+       {console.log(userAnswers)}
+      {
+        // userAnswers.map((e:number|undefined, i:number) => {
+        //   return <p key={i}>index: {i.toString()}, value: {e?.toString()}</p>
+        // })
+      } 
+      </div>
       <p>
         showResult {showResult}
       </p>
@@ -117,8 +120,12 @@ function Quiz() {
           questions.map((q:Ask, i:number) => {
             let active = '';
             if (currentQuestion === i) { active = 'active' }
-            return (<div key={q.id} className={active}><Question question={q} userAnswer={userAnswers[i]} /></div>)
-          } )
+            return (
+              <section key={q.id} className={active}>
+                <Question question={q} index={i} userAnswer={userAnswers[i]} handleAnswer={handleAnswer} />
+              </section>
+            )
+          })
         }
       </div>
         <div className="flex flex-row align-center justify-around">
