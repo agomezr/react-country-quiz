@@ -7,14 +7,15 @@ export function buildRegionQuestion(countryObject:any, allCountries:any):Ask{
     // 1. Get country region
     const countryRegion = countryObject.region;
 
-    // 2. Get 3 ramdon currencies but not the correct one
-    const allRegions:string[] = [];
+    // 2. Get 3 ramdon region but not the correct one
     
-    allCountries.map((e:any) => {
-        if (!allRegions.includes(countryRegion)) {
-            allRegions.push(e.region);
+    const uniqueRegionsSet = new Set();
+    allCountries.forEach((country: { region: string; }) => {
+        if (country.region) {
+            uniqueRegionsSet.add(country.region);
         }
     });
+    const allRegions= Array.from(uniqueRegionsSet) as string[];
     
     const regionsOptionsFake = getOptions(allRegions, countryRegion, 3);
     
