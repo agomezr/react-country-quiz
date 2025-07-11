@@ -10,9 +10,24 @@ import { buildCapitalQuestion } from '../lib/capitalSection';
 import { buildRegionQuestion } from '../lib/regionSection';
 import Question from "./Question";
 
+function Score({partial, total}:{partial:number|undefined, total:number|undefined}){
+  const scorePartial = (partial === undefined)? 0 : partial;
+  const scoreTotal = (total === undefined)? 0 : total;
+  return(
+    <div className="btn-bg px-5 py-2 rounded-4xl text-sm font-semibold">
+      <div className="flex flex-row items-center justify-center gap-1">
+        <span>{scorePartial}</span> / 
+        <span>{scoreTotal}</span>
+        <span className="ms-2">Points</span>
+      </div>
+    </div>
+  )
+}
+
 function Quiz() {
   // const [about, setAbout] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [score, setScore] = useState<number>(0);
 
   const [questions, setQuestions] = useState<Ask[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -98,6 +113,14 @@ function Quiz() {
     questionToUpdate.selected = answerIndex;
     newQuestions[questionIndex] = questionToUpdate;
     setQuestions(newQuestions);
+
+    if(questions[questionIndex].correct === answerIndex) {
+      setScore(score + 1);
+    } else {
+      if (score > 1){ 
+        setScore(score - 1 );
+      }
+    }
   };
 
   const handleNextQuestion = () => {
@@ -131,27 +154,41 @@ function Quiz() {
 
   if (loading) {
     return (
-      <div className="quiz">
         <div className="w-full h-full mx-auto md:w-2xl p-3">
           <p>Cargando preguntas...</p>
           <button className="btn" onClick={()=> {setLoading(false)}}>Quitar loading.</button>
         </div>
-      </div>
     );
   }
   if (questions.length === 0) {
     return (
-      <div className="quiz">
         <p>No hay preguntas disponibles. ¡Prueba a cargar algunas!</p>
-      </div>
     )
   }
 
   return ( 
-    <div className="quiz">
-      <p>
-        Current question {currentQuestion}
-      </p>
+  <div className="wrapper md:w-2xl mx-auto">
+
+    <div className="flex flex-row w-full items-center justify-between mb-5">
+      <span className="text-white font-bold text-2xl">Country Quiz</span>
+      <Score partial={score} total={userAnswers.length}/>
+    </div>
+    <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
+
+    <p>
+      Current question : {currentQuestion}
+    </p>
+    
+    <div className="bullets">
+      {userAnswers.map( (i,index) => {
+        let active = '';
+        if (currentQuestion > index -1 )
+          active = 'btn-bg';
+        return (
+          <span className={`btn ${active} font-bold`}>{index +1}</span>
+        )
+      })}
+    </div>
       {/* Usando una IIFE para ejecutar sentencias */}
       {(() => {
         console.log('questions (dentro del JSX con IIFE)');
@@ -168,7 +205,7 @@ function Quiz() {
       } 
       </div>
 
-      <div>
+      <div className="section-group">
         {(questions.length > 0) &&
           questions.map((q:Ask, i:number) => {
             let active = '';
@@ -186,7 +223,8 @@ function Quiz() {
           <div className="btn" onClick={() => handleNextQuestion()}>Next</div>
         </div>
         <div className="btn mb-3" onClick={() => handleFinishQuiz()}>Finish!</div>
-    </div>
+      </div>
+  </div>
   );
 }
 

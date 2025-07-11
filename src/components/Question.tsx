@@ -10,7 +10,7 @@ function Question({ question, index, userAnswer, handleAnswer}:
             question.answers.map((e:string, i:number) => {
               const optionKey = `${question.id}-${i}`;
               let color = 'bg-blue-500';
-              if (userAnswer[index] === question.correct && i === userAnswer[index]){ color = 'bg-green-500'; }
+              if (userAnswer[index] === question.correct && i === userAnswer[index]){ color = 'btn-bg'; }
                 
               return (
                 <button key={optionKey} className={`btn ${color}`} 

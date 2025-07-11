@@ -16,6 +16,13 @@ body {
   background-size: cover;
   min-height: 100dvh;
 }
+.wrapper {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+}
 .btn {
   display:flex;
   flex-direction: row;
@@ -23,17 +30,53 @@ body {
   justify-content: center;
   border-radius: 10px;
   padding: 1rem;
-  border: 1px solid var(--color-gray);
   background-color: var(--color-gray-darked);
   cursor:pointer;
+  color: white;
 }
 .btn-bg {
-  background-image: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  background-image: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
   color: #fff;
 }
- section {
-  padding: 1rem;
+.bullets {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: .8rem;
+  span {
+    display: flex; flex-direction: row;
+    align-items: center; justify-content: center;
+    width: 2rem; height:2rem;
+    border: white;
+    border-radius: 50%;
+    background-color: var(--color-gray-darked);
+  }
+}
+.section-group {
+  position: relative;
+}
+section {
+  display: grid;
+  align-content: center;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  height:0;
+  transform: scale(0);
+  opacity: 0;
+  transition: 
+              opacity 0.5s linear,
+              height 0.5s linear;
+
  }
-.active {
-  outline: 1px solid yellow;
+section.active {
+  height: auto !important;
+   padding: 1rem;
+  transform: scale(1);
+  opacity: 1;
+   transition: 
+              opacity 0.5s linear,
+              height 0.5s linear;
 }
