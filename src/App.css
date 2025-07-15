@@ -16,6 +16,9 @@ body {
   background-size: cover;
   min-height: 100dvh;
 }
+.beta {
+  outline: 1px solid greenyellow;
+}
 .wrapper {
   display:flex;
   flex-direction: column;
@@ -58,11 +61,6 @@ body {
   position: relative;
 }
 section {
-  display: grid;
-  align-content: center;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
   height:0;
   transform: scale(0);
   opacity: 0;
@@ -80,3 +78,4 @@ section.active {
               opacity 0.5s linear,
               height 0.5s linear;
 }
+

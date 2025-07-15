@@ -9,6 +9,7 @@ import { buildCurrencyQuestion } from '../lib/currencySection';
 import { buildCapitalQuestion } from '../lib/capitalSection';
 import { buildRegionQuestion } from '../lib/regionSection';
 import Question from "./Question";
+import Modal from "./Modal";
 
 function Score({partial, total}:{partial:number|undefined, total:number|undefined}){
   const scorePartial = (partial === undefined)? 0 : partial;
@@ -28,6 +29,7 @@ function Quiz() {
   // const [about, setAbout] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [score, setScore] = useState<number>(0);
+  const [attempt, setAttempt] = useState<number>(0);
 
   const [questions, setQuestions] = useState<Ask[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -69,6 +71,7 @@ function Quiz() {
       setQuestions([]);
       setUserAnswers([]);
       setCurrentQuestion(0);
+      setScore(0);
     });
     // Fetch quiz questions from the API
     // fetch('https://restcountries.com/v3.1/all?&fields=languages,capital,name,currencies,region,population,flags,borders,timezones')
@@ -99,7 +102,7 @@ function Quiz() {
     // })
     // .catch(() => console.log('Something goes wrong with the API'));
 
-  },[]);
+  },[attempt]);
 
   type HandleAnswerFunction = (questionIndex: number, answerIndex: number) => void;
   const handleAnswer:HandleAnswerFunction = (questionIndex, answerIndex) => {
@@ -108,19 +111,11 @@ function Quiz() {
     newAnswers[questionIndex] = answerIndex; 
     setUserAnswers(newAnswers);
 
-    const newQuestions = [...questions];
-    const questionToUpdate = { ...newQuestions[questionIndex] };
-    questionToUpdate.selected = answerIndex;
-    newQuestions[questionIndex] = questionToUpdate;
-    setQuestions(newQuestions);
-
-    if(questions[questionIndex].correct === answerIndex) {
-      setScore(score + 1);
-    } else {
-      if (score > 1){ 
-        setScore(score - 1 );
-      }
-    }
+    let progress = 0;
+    newAnswers.forEach( (i,index) => {
+      if(questions[index].correct === i){ progress++; }
+    });
+    setScore(progress);
   };
 
   const handleNextQuestion = () => {
@@ -142,14 +137,13 @@ function Quiz() {
   const handleFinishQuiz = () => {
     // Calculate the quiz result and show the result page
     const total = questions.length;
-    let success = 0;
-    questions.map((a:Ask) => {
-      if (a.correct === a.selected)
-        success++;
-    });
-    console.log(`Total scocre ${success}/${total}`);
+    console.log(`Total scocre ${score}/${total}`);
     setShowResult(true);
     
+  };
+
+  const handleCloseModal = () => {
+    setShowResult(false); 
   };
 
   if (loading) {
@@ -167,64 +161,81 @@ function Quiz() {
   }
 
   return ( 
-  <div className="wrapper md:w-2xl mx-auto">
+  <>
 
-    <div className="flex flex-row w-full items-center justify-between mb-5">
-      <span className="text-white font-bold text-2xl">Country Quiz</span>
-      <Score partial={score} total={userAnswers.length}/>
-    </div>
-    <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
+    <div className="wrapper md:w-2xl mx-auto">
 
-    <p>
-      Current question : {currentQuestion}
-    </p>
-    
-    <div className="bullets">
-      {userAnswers.map( (i,index) => {
-        let active = '';
-        if (currentQuestion > index -1 )
-          active = 'btn-bg';
-        return (
-          <span className={`btn ${active} font-bold`}>{index +1}</span>
-        )
-      })}
-    </div>
-      {/* Usando una IIFE para ejecutar sentencias */}
-      {(() => {
-        console.log('questions (dentro del JSX con IIFE)');
-        console.log(questions);
-        console.log(userAnswers);
-        return null; // Opcional: devuelve null si no quieres renderizar nada
-      })()}
-      <div>
-       User answers 
-      {
-        userAnswers.map((e:number|undefined, i:number) => {
-          return <p key={i}>index: {i.toString()}, value: {e?.toString()}</p>
-        })
-      } 
+      <div className="flex flex-row w-full items-center justify-between mb-5">
+        <span className="text-white font-bold text-2xl">Country Quiz</span>
+        <Score partial={score} total={userAnswers.length}/>
       </div>
+      <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
 
-      <div className="section-group">
-        {(questions.length > 0) &&
-          questions.map((q:Ask, i:number) => {
-            let active = '';
-            if (currentQuestion === i) { active = 'active' }
-            return (
-              <section key={q.id} className={active}>
-                <Question question={q} index={i} userAnswer={userAnswers} handleAnswer={handleAnswer} />
-              </section>
-            )
+      <p>
+        Current question : {currentQuestion}
+      </p>
+      
+      <div className="bullets">
+        {userAnswers.map( (i,index) => {
+          let active = '';
+          if (currentQuestion > index -1 )
+            active = 'btn-bg';
+          return (
+            <span className={`btn ${active} font-bold`}>{index +1}</span>
+          )
+        })}
+      </div>
+        {/* Usando una IIFE para ejecutar sentencias */}
+        {(() => {
+          console.log('questions (dentro del JSX con IIFE)');
+          console.log(questions);
+          console.log(userAnswers);
+          return null; // Opcional: devuelve null si no quieres renderizar nada
+        })()}
+        <div>
+        User answers 
+        {
+          userAnswers.map((e:number|undefined, i:number) => {
+            return <p key={i}>index: {i.toString()}, value: {e?.toString()}</p>
           })
-        }
-      </div>
-        <div className="flex flex-row align-center justify-around">
-          <div className="btn" onClick={() => handlePrevQuestion()}>Prev</div>
-          <div className="btn" onClick={() => handleNextQuestion()}>Next</div>
+        } 
         </div>
-        <div className="btn mb-3" onClick={() => handleFinishQuiz()}>Finish!</div>
-      </div>
-  </div>
+
+        <div className="section-group">
+          {(questions.length > 0) &&
+            questions.map((q:Ask, i:number) => {
+              let active = '';
+              if (currentQuestion === i) { active = 'active' }
+              return (
+                <section key={q.id} className={`${active} w-full`}>
+                  <Question question={q} index={i} userAnswer={userAnswers} handleAnswer={handleAnswer} />
+                </section>
+              )
+            })
+          }
+        </div>
+          <div className="flex flex-row align-center justify-around mb-4">
+            <div className="btn" onClick={() => handlePrevQuestion()} 
+            style={(currentQuestion === 0)? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
+              {'<'} Prev
+            </div>
+            <div className="btn" onClick={() => handleNextQuestion()}
+              style={(currentQuestion === questions.length-1 )? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
+                Next {'>'}
+            </div>
+          </div>
+          <div className="btn mb-3" onClick={() => handleFinishQuiz()}>Finish!</div>
+          <div className="btn mb-3" onClick={() => setAttempt(attempt+1)}>Restart!</div>
+        </div>
+    </div>
+
+    <Modal show={showResult} onClose={handleCloseModal}>
+      <h2>¡Cuestionario Terminado!</h2>
+      <p>Tu puntuación final es: {score} / {questions.length} puntos.</p>
+      <p>¡Gracias por participar!</p>
+    </Modal>
+  </>
+      
   );
 }
 

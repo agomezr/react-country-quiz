@@ -23,7 +23,6 @@ export function buildCapitalQuestion(countryObject:any, allCountries:any):Ask{
         id: 'capital-question',
         title: `What ${countryObject.name.common} capital is?`,
         answers: capitalsOptions,
-        correct: capitalsOptions.indexOf(countryCapital),
-        selected: undefined
+        correct: capitalsOptions.indexOf(countryCapital)
     }
 }
