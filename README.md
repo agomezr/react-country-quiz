@@ -1,6 +1,8 @@
 # Example of React app
 
-Thank you, [DevChallenges](https://devchallenges.io/), for letting us learn coding skills in a great environment with excellent presentation and quality
+Thank you, [DevChallenges](https://devchallenges.io/), for letting us learn coding skills in a great environment with excellent presentation and quality.
+
+In this exercise y use React + Vite + TailwindCss. I make some lower improvements and follow the instructions of the example but not all the presentation requirements like paddings, number of questions, etc.
 
 <img width="1124" height="850" alt="preview" src="https://github.com/user-attachments/assets/c0271189-cf88-459a-8014-e09ec5fecdec" />
 
