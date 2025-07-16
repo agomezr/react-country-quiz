@@ -2,6 +2,9 @@
 
 Thank you, [DevChallenges](https://devchallenges.io/), for letting us learn coding skills in a great environment with excellent presentation and quality
 
+<img width="1124" height="850" alt="preview" src="https://github.com/user-attachments/assets/c0271189-cf88-459a-8014-e09ec5fecdec" />
+
+
 ## Description & API
 
 Most of the time, API is optimized for displaying a set of data, but other times, we need to modify the data and use it for our purpose. In this challenge, you will work with country API and build a country quiz app.
