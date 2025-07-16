@@ -173,7 +173,7 @@ function Quiz() {
       <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
       
         <div className="bullets mb-4">
-          {userAnswers.map( (i,index) => {
+          {userAnswers.map( (_,index) => {
             let active = '';
             if (currentQuestion > index -1 )
               active = 'btn-bg';

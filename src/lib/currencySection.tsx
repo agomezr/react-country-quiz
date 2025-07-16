@@ -33,6 +33,5 @@ export function buildCurrencyQuestion(countryObject:any, allCountries:any):Ask{
         title: `What currency ${countryObject.name.common} use?`,
         answers: currenciesOptions,
         correct: currenciesOptions.indexOf(countryCurrency),
-        selected: undefined
     }
 }

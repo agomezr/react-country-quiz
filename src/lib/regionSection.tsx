@@ -28,6 +28,5 @@ export function buildRegionQuestion(countryObject:any, allCountries:any):Ask{
         title: `Where is ${countryObject.name.common}?`,
         answers: regionOptions,
         correct: regionOptions.indexOf(countryRegion),
-        selected: undefined
     }
 }
