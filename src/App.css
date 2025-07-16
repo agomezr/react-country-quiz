@@ -15,6 +15,9 @@ body {
   background: transparent url('./bg.jpg') center center no-repeat;
   background-size: cover;
   min-height: 100dvh;
+  min-width: 320px;
+  color: var(--color-light);
+  background-color: var(--color-gray-darked);
 }
 .beta {
   outline: 1px solid greenyellow;
@@ -27,19 +30,38 @@ body {
   min-height: 100dvh;
 }
 .btn {
-  display:flex;
+  display:flex; gap: .5rem;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
   padding: 1rem;
   background-color: var(--color-gray-darked);
-  cursor:pointer;
-  color: white;
+  cursor: pointer;
+  color: var(--color-light);
+  transition: all .1s ease-in;
+}
+.btn-sm {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: .3rem .7rem;
+  background-color: var(--color-gray-darked);
+  cursor: pointer;
+  color: var(--color-light);
+  transition: all .1s ease-in;
+}
+.btn:hover, .btn-sm:hover {
+  background-image: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
+  color: #fff;
+  transition: all .1s ease-in;
 }
 .btn-bg {
   background-image: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
   color: #fff;
+  transition: all .1s ease-in;
 }
 .bullets {
   display: flex;
@@ -71,7 +93,7 @@ section {
  }
 section.active {
   height: auto !important;
-   padding: 1rem;
+  padding: 1rem;
   transform: scale(1);
   opacity: 1;
    transition: 

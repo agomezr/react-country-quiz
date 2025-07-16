@@ -29,7 +29,7 @@ function Quiz() {
   // const [about, setAbout] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [score, setScore] = useState<number>(0);
-  const [attempt, setAttempt] = useState<number>(0);
+  const [attempt, setAttempt] = useState<number>(1);
 
   const [questions, setQuestions] = useState<Ask[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -48,17 +48,17 @@ function Quiz() {
   
     /* Currency section */
     const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
-    console.log(currencyQuestion);
+    // console.log(currencyQuestion);
     buildsQuestions.push(currencyQuestion);
 
     /* Capital section */
     const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
-    console.log(capitalQuestion);
+    // console.log(capitalQuestion);
     buildsQuestions.push(capitalQuestion);
 
     /* Region section */
     const regionQuestion = buildRegionQuestion(randomCountryObject, res);
-    console.log(regionQuestion);
+    // console.log(regionQuestion);
     buildsQuestions.push(regionQuestion);
 
     setQuestions(buildsQuestions);
@@ -135,10 +135,10 @@ function Quiz() {
   };
 
   const handleFinishQuiz = () => {
-    // Calculate the quiz result and show the result page
-    const total = questions.length;
-    console.log(`Total scocre ${score}/${total}`);
-    setShowResult(true);
+    // If the user has play all the questions
+    if (userAnswers.every(answer => answer !== undefined)){
+      setShowResult(true);
+    }
     
   };
 
@@ -169,37 +169,32 @@ function Quiz() {
         <span className="text-white font-bold text-2xl">Country Quiz</span>
         <Score partial={score} total={userAnswers.length}/>
       </div>
-      <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
 
-      <p>
-        Current question : {currentQuestion}
-      </p>
+      <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
       
-      <div className="bullets">
-        {userAnswers.map( (i,index) => {
-          let active = '';
-          if (currentQuestion > index -1 )
-            active = 'btn-bg';
-          return (
-            <span className={`btn ${active} font-bold`}>{index +1}</span>
-          )
-        })}
-      </div>
-        {/* Usando una IIFE para ejecutar sentencias */}
-        {(() => {
-          console.log('questions (dentro del JSX con IIFE)');
-          console.log(questions);
-          console.log(userAnswers);
-          return null; // Opcional: devuelve null si no quieres renderizar nada
-        })()}
-        <div>
-        User answers 
-        {
-          userAnswers.map((e:number|undefined, i:number) => {
-            return <p key={i}>index: {i.toString()}, value: {e?.toString()}</p>
-          })
-        } 
+        <div className="bullets mb-4">
+          {userAnswers.map( (i,index) => {
+            let active = '';
+            if (currentQuestion > index -1 )
+              active = 'btn-bg';
+            return (
+              <span className={`btn ${active} font-bold`}>{index +1}</span>
+            )
+          })}
         </div>
+        {/* Use IIFE to debug */}
+        {(() => {
+          /*console.log(questions);*/
+          return null; // Opcional: devuelve null si no quieres renderizar nada
+        })()} 
+        {/* <div>
+          User answers 
+          {
+            userAnswers.map((e:number|undefined, i:number) => {
+              return <p key={i}>index: {i.toString()}, value: {e?.toString()}</p>
+            })
+          } 
+        </div> */}
 
         <div className="section-group">
           {(questions.length > 0) &&
@@ -214,25 +209,33 @@ function Quiz() {
             })
           }
         </div>
-          <div className="flex flex-row align-center justify-around mb-4">
-            <div className="btn" onClick={() => handlePrevQuestion()} 
-            style={(currentQuestion === 0)? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
-              {'<'} Prev
-            </div>
-            <div className="btn" onClick={() => handleNextQuestion()}
-              style={(currentQuestion === questions.length-1 )? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
-                Next {'>'}
-            </div>
+        <div className="flex flex-row align-center justify-around mb-5">
+          <div className="btn btn-sm" onClick={() => handlePrevQuestion()} 
+          style={(currentQuestion === 0)? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
+            {'<'} Prev
           </div>
-          <div className="btn mb-3" onClick={() => handleFinishQuiz()}>Finish!</div>
-          <div className="btn mb-3" onClick={() => setAttempt(attempt+1)}>Restart!</div>
+          <div className="btn btn-sm" onClick={() => handleNextQuestion()}
+            style={(currentQuestion === questions.length-1 )? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
+              Next {'>'}
+          </div>
         </div>
+        <button className="btn w-2/5 mx-auto mb-3 " onClick={() => handleFinishQuiz()}
+        style={(userAnswers.every(answer => answer !== undefined))? {opacity: 1}: { opacity: 0.1, cursor: 'not-allowed' } }>
+          Finish!
+        </button>
+
+      </div>
+
+      <div className="text-end text-sm opacity-25 w-full">Games: {attempt}</div>
+      <div className="btn btn-bg my-4 mb-3 mx-auto" onClick={() => setAttempt(attempt+1)}>New Game</div>
+
     </div>
 
     <Modal show={showResult} onClose={handleCloseModal}>
-      <h2>¡Cuestionario Terminado!</h2>
-      <p>Tu puntuación final es: {score} / {questions.length} puntos.</p>
-      <p>¡Gracias por participar!</p>
+      <h2 className="font-bold text-3xl">Congrats!</h2>
+      <p className="font-bold text-xl mb-3">You completed the quiz</p>
+      <p className="mb-6">You answer {score} / {questions.length} correctly</p>
+      <div className="btn btn-bg font-black mx-3" onClick={() => {setAttempt(attempt+1); setShowResult(false);}}>Play again!</div>
     </Modal>
   </>
       

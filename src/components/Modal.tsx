@@ -9,8 +9,8 @@ export default function Modal (
 
   return (
     <div className="modal-overlay" >
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <img src={image} alt="Final image" className="max-w-full h-auto mx-auto mb-3" />
+      <div className="modal-content bg-gray-dark rounded-xl px-4 py-8 mx-2" onClick={e => e.stopPropagation()}>
+        <img src={image} alt="Final image" className="max-w-full h-auto mx-auto mb-5" />
         {children}
         <button className="modal-close-button" onClick={onClose} title="Close">
           X
