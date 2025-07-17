@@ -12,7 +12,7 @@
   --color-yellow: #FFECC8;
 }
 body {
-  background: transparent url('./bg.jpg') center center no-repeat;
+  background: transparent url('/bg.jpg') center center no-repeat;
   background-size: cover;
   min-height: 100dvh;
   min-width: 320px;
