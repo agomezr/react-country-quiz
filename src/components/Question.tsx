@@ -4,7 +4,9 @@ import ko from "/close_round_fill.svg";
 
 function Question({ question, index, userAnswer, handleAnswer}:
   { question:Ask, index:number, userAnswer:(number|undefined)[], handleAnswer:(questionIndex: number, answerIndex: number) => void}) {
-  return <div className="question w-full">
+  
+  return( 
+    <div className="question w-full">
       <div>
         <p className="text-center mb-5 font-extrabold text-xl"> {question.title} </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 align-center justify-center mx-auto">
@@ -32,7 +34,8 @@ function Question({ question, index, userAnswer, handleAnswer}:
           }
         </div>
       </div>
-    </div>;
+    </div>
+  );
 }
 
 export default Question;

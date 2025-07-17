@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Ask } from "../interfaces/ask";
 
-import res from '../data/result.json';
+// import res from '../data/result.json';
 import '../App.css';
 
 import { getRandomArrayElement } from '../lib/helpers';
@@ -10,6 +10,12 @@ import { buildCapitalQuestion } from '../lib/capitalSection';
 import { buildRegionQuestion } from '../lib/regionSection';
 import Question from "./Question";
 import Modal from "./Modal";
+import loadingGif from "/loading.gif";
+
+interface ApiError {
+  message: string;
+  code?: number; // Error code optional
+}
 
 function Score({partial, total}:{partial:number|undefined, total:number|undefined}){
   const scorePartial = (partial === undefined)? 0 : partial;
@@ -26,8 +32,8 @@ function Score({partial, total}:{partial:number|undefined, total:number|undefine
 }
 
 function Quiz() {
-  // const [about, setAbout] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | ApiError | null>(null);
   const [score, setScore] = useState<number>(0);
   const [attempt, setAttempt] = useState<number>(1);
 
@@ -36,71 +42,104 @@ function Quiz() {
   const [userAnswers, setUserAnswers] = useState<(number|undefined)[]>([]);
   const [showResult, setShowResult] = useState<boolean>(false);
 
-
   // const addQuestion = (newQuestion: Ask) => {
   //   setQuestions(prevQuestions => [...prevQuestions, newQuestion]);
   // };
 
   useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch('https://restcountries.com/v3.1/all?&fields=languages,capital,name,currencies,region,population,flags,borders,timezones');
+
+        if (!response.ok) {
+          let errorData: ApiError | Error;
+          try {
+            errorData = await response.json() as ApiError;
+            if (!errorData.message) {
+              errorData = new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+            }
+          } catch {
+            errorData = new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+          }
+          throw errorData; 
+        }
+
+        const res = await response.json(); 
+
+        // 0. Get the Ramdom Country
+        const randomCountryObject = getRandomArrayElement(res);
+        const buildsQuestions:Ask[] = [];
+      
+        /* Currency section */
+        const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
+        buildsQuestions.push(currencyQuestion);
+
+        /* Capital section */
+        const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
+        buildsQuestions.push(capitalQuestion);
+
+        /* Region section */
+        const regionQuestion = buildRegionQuestion(randomCountryObject, res);
+        buildsQuestions.push(regionQuestion);
+
+        setQuestions(buildsQuestions);
+        setUserAnswers(new Array(buildsQuestions.length).fill(undefined));
+
+      } catch (err: unknown) { 
+        console.error("Error fetching data:", err);
+        if (err instanceof Error) {
+          setError(err);
+        } else if (typeof err === 'object' && err !== null && 'message' in err) {
+          setError(err as ApiError); 
+        } else {
+          setError(new Error('An unknown error occurred.'));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    /*
+    // Remember uncomment the res import at the start of this file
+    const fetchLocalData = () =>{
+      const randomCountryObject = getRandomArrayElement(res);
+      const buildsQuestions:Ask[] = [];
     
-    const randomCountryObject = getRandomArrayElement(res);
-    const buildsQuestions:Ask[] = [];
-  
-    /* Currency section */
-    const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
-    // console.log(currencyQuestion);
-    buildsQuestions.push(currencyQuestion);
+      // Currency section 
+      const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
+      buildsQuestions.push(currencyQuestion);
 
-    /* Capital section */
-    const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
-    // console.log(capitalQuestion);
-    buildsQuestions.push(capitalQuestion);
+      // Capital section 
+      const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
+      buildsQuestions.push(capitalQuestion);
 
-    /* Region section */
-    const regionQuestion = buildRegionQuestion(randomCountryObject, res);
-    // console.log(regionQuestion);
-    buildsQuestions.push(regionQuestion);
+      // Region section 
+      const regionQuestion = buildRegionQuestion(randomCountryObject, res);
+      buildsQuestions.push(regionQuestion);
 
-    setQuestions(buildsQuestions);
-    setUserAnswers(new Array(buildsQuestions.length).fill(undefined));
-    setLoading(false);
+      //... Other cuestions
 
+      setQuestions(buildsQuestions);
+      setUserAnswers(new Array(buildsQuestions.length).fill(undefined));
+      setLoading(false);
+    };
+    */
 
-    return (()=> {
+    // fetchLocalData();
+
+    return (()=> { // Clean states on destroy
       setLoading(true);
       setQuestions([]);
       setUserAnswers([]);
       setCurrentQuestion(0);
       setScore(0);
     });
-    // Fetch quiz questions from the API
-    // fetch('https://restcountries.com/v3.1/all?&fields=languages,capital,name,currencies,region,population,flags,borders,timezones')
-    // .then(res => res.json())
-    // .then((res) => { 
-    //   // 0. Get the Ramdom Country
-    //   const randomCountryObject = getRandomArrayElement(res);
-    //   const buildsQuestions:Ask[] = [];
-      
-    //   /* Currency section */
-    //   const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
-    //   buildsQuestions.push(currencyQuestion);
-    //   // addQuestion(currencyQuestion);
-
-    //   /* Capital section */
-    //   const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
-    //   buildsQuestions.push(capitalQuestion);
-    //   // addQuestion(capitalQuestion);
-
-    //   /* Region section */
-    //   const regionQuestion = buildRegionQuestion(randomCountryObject, res);
-    //   buildsQuestions.push(regionQuestion);
-    //   // addQuestion(regionQuestion);
-
-    //   setQuestions(buildsQuestions);
-    //   setUserAnswers(new Array(buildsQuestions.length+1).fill(undefined));
-
-    // })
-    // .catch(() => console.log('Something goes wrong with the API'));
 
   },[attempt]);
 
@@ -148,16 +187,27 @@ function Quiz() {
 
   if (loading) {
     return (
-        <div className="w-full h-full mx-auto md:w-2xl p-3">
-          <p>Cargando preguntas...</p>
-          <button className="btn" onClick={()=> {setLoading(false)}}>Quitar loading.</button>
+        <div className="wrapper md:w-2xl mx-auto">
+          <div className="bg-gray-dark rounded-xl px-4 py-8 w-full text-center">
+            <img src={loadingGif} alt="Loading Gif" className="mx-auto" />
+            <p>Loading Quiz .... Please, wait a bit.</p>
+          </div>
         </div>
     );
   }
-  if (questions.length === 0) {
+
+   if (error) {
     return (
-        <p>No hay preguntas disponibles. ¡Prueba a cargar algunas!</p>
-    )
+      <div>
+        <div className="wrapper md:w-2xl mx-auto">
+          <div className="bg-gray-dark rounded-xl px-4 py-8 w-full text-center">
+            <p>Somethig goes wrong. Sorry.</p>
+            <p>{error.message}</p> 
+            <button className="btn btn-bg" title="Retry" onClick={() => window.location.reload()}>Retry!</button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return ( 
@@ -173,28 +223,24 @@ function Quiz() {
       <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
       
         <div className="bullets mb-4">
-          {userAnswers.map( (_,index) => {
+          {userAnswers.map( (i,index) => {
             let active = '';
-            if (currentQuestion > index -1 )
+            if ( i !== undefined ){
               active = 'btn-bg';
+            }
+            if ( currentQuestion === index ){
+              active = 'btn-bg shadow-2xl ring';
+            }
             return (
-              <span className={`btn ${active} font-bold`}>{index +1}</span>
+              <span className={`btn font-bold ${active} `} onClick={() => setCurrentQuestion(index)}>{index +1}</span>
             )
           })}
         </div>
-        {/* Use IIFE to debug */}
+        {/* Use IIFE (Immediate Invoked Function Expression) to debug */}
         {(() => {
-          /*console.log(questions);*/
-          return null; // Opcional: devuelve null si no quieres renderizar nada
+          // console.log(userAnswers);
+          return null; 
         })()} 
-        {/* <div>
-          User answers 
-          {
-            userAnswers.map((e:number|undefined, i:number) => {
-              return <p key={i}>index: {i.toString()}, value: {e?.toString()}</p>
-            })
-          } 
-        </div> */}
 
         <div className="section-group">
           {(questions.length > 0) &&
@@ -209,6 +255,7 @@ function Quiz() {
             })
           }
         </div>
+
         <div className="flex flex-row align-center justify-around mb-5">
           <div className="btn btn-sm" onClick={() => handlePrevQuestion()} 
           style={(currentQuestion === 0)? { opacity: 0.1, cursor: 'not-allowed' } : {opacity: 1}}>
@@ -219,6 +266,7 @@ function Quiz() {
               Next {'>'}
           </div>
         </div>
+
         <button className="btn w-2/5 mx-auto mb-3 " onClick={() => handleFinishQuiz()}
         style={(userAnswers.every(answer => answer !== undefined))? {opacity: 1}: { opacity: 0.1, cursor: 'not-allowed' } }>
           Finish!
