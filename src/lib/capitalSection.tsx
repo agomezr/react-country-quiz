@@ -8,7 +8,6 @@ export function buildCapitalQuestion(countryObject:any, allCountries:any):Ask{
     const countryCapital = countryObject.capital[0];
 
     // 2. Get 3 ramdon capitals but not the correct one
-    
     const allCapitals = allCountries.map((e:any) => { 
         return e.capital[0];
     });
@@ -21,7 +20,7 @@ export function buildCapitalQuestion(countryObject:any, allCountries:any):Ask{
           
     return {
         id: 'capital-question',
-        title: `What ${countryObject.name.common} capital is?`,
+        title: `What is the capital of ${countryObject.name.common}?`,
         answers: capitalsOptions,
         correct: capitalsOptions.indexOf(countryCapital)
     }

@@ -1,8 +1,10 @@
 import '../Modal.css'; 
 import image from '/congrats.png'
+
 export default function Modal ( 
     {show, children, onClose}:
     {show: boolean, children:React.ReactNode, onClose:()=>void}) {
+      
   if (!show) {
     return null; 
   }

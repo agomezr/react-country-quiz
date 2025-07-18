@@ -73,6 +73,12 @@ function Quiz() {
         // 0. Get the Ramdom Country
         const randomCountryObject = getRandomArrayElement(res);
         const buildsQuestions:Ask[] = [];
+
+        /*
+         @todo 
+         - get out .map and set of buildQuestion because we repeat it in all builders
+         - deploy strategy pattern for builders
+         */
       
         /* Currency section */
         const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
@@ -222,7 +228,7 @@ function Quiz() {
 
       <div className="bg-gray-dark rounded-xl px-4 py-8 w-full">
       
-        <div className="bullets mb-4">
+        <div className="bullets md:mb-4">
           {userAnswers.map( (i,index) => {
             let active = '';
             if ( i !== undefined ){
@@ -267,7 +273,7 @@ function Quiz() {
           </div>
         </div>
 
-        <button className="btn w-2/5 mx-auto mb-3 " onClick={() => handleFinishQuiz()}
+        <button className="btn w-2/5 mx-auto" onClick={() => handleFinishQuiz()}
         style={(userAnswers.every(answer => answer !== undefined))? {opacity: 1}: { opacity: 0.1, cursor: 'not-allowed' } }>
           Finish!
         </button>

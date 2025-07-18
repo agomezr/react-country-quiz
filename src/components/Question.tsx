@@ -3,7 +3,8 @@ import ok from "/check_round_fill.svg";
 import ko from "/close_round_fill.svg";
 
 function Question({ question, index, userAnswer, handleAnswer}:
-  { question:Ask, index:number, userAnswer:(number|undefined)[], handleAnswer:(questionIndex: number, answerIndex: number) => void}) {
+  { question:Ask, index:number, userAnswer:(number|undefined)[], 
+    handleAnswer:(questionIndex: number, answerIndex: number) => void}) {
   
   return( 
     <div className="question w-full">

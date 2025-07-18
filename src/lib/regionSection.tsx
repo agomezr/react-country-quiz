@@ -8,15 +8,14 @@ export function buildRegionQuestion(countryObject:any, allCountries:any):Ask{
     const countryRegion = countryObject.region;
 
     // 2. Get 3 ramdon region but not the correct one
-    
     const uniqueRegionsSet = new Set();
     allCountries.forEach((country: { region: string; }) => {
         if (country.region) {
             uniqueRegionsSet.add(country.region);
         }
     });
+
     const allRegions= Array.from(uniqueRegionsSet) as string[];
-    
     const regionsOptionsFake = getOptions(allRegions, countryRegion, 3);
     
     // 3. Set the correct currency in the options array and shuffle it
