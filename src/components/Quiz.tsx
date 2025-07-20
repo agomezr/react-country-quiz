@@ -77,7 +77,7 @@ function Quiz() {
         /*
          @todo 
          - get out .map and set of buildQuestion because we repeat it in all builders
-         - deploy strategy pattern for builders
+         - deploy factory pattern for builders
          */
       
         /* Currency section */
