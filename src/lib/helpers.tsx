@@ -1,6 +1,6 @@
   export function getRandomArrayElement<T>(arr: T[]): T | undefined {
     if (arr.length === 0) {
-      return undefined; // Or throw an error, or return null, depending on desired behavior for empty arrays
+      return undefined; 
     }
     const randomIndex = Math.floor(Math.random() * arr.length);
     return arr[randomIndex];
@@ -8,8 +8,8 @@
 
   /*
     allOptions: array of al string options
-    toDelete: the string or option that must be excluded for the result
-    amount: the length of the return array
+    toDelete: the string or option that must be excluded of the result
+    amount: the length of the returned array
   */
   export function getOptions(allOptions:string[], toDelete:string, amount:number = 3):string[]{
     const options:string[] = [];

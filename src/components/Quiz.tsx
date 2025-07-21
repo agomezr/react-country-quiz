@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import type { Ask } from "../interfaces/ask";
 
@@ -5,12 +6,11 @@ import type { Ask } from "../interfaces/ask";
 import '../App.css';
 
 import { getRandomArrayElement } from '../lib/helpers';
-import { buildCurrencyQuestion } from '../lib/currencySection';
-import { buildCapitalQuestion } from '../lib/capitalSection';
-import { buildRegionQuestion } from '../lib/regionSection';
 import Question from "./Question";
 import Modal from "./Modal";
 import loadingGif from "/loading.gif";
+import type { CurrenciesObject, CurrencyDetail } from "../interfaces/country";
+import QuestionFactory from "../lib/QuestionFactory";
 
 interface ApiError {
   message: string;
@@ -74,23 +74,29 @@ function Quiz() {
         const randomCountryObject = getRandomArrayElement(res);
         const buildsQuestions:Ask[] = [];
 
-        /*
-         @todo 
-         - get out .map and set of buildQuestion because we repeat it in all builders
-         - deploy factory pattern for builders
-         */
-      
-        /* Currency section */
-        const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
-        buildsQuestions.push(currencyQuestion);
+        /* Get allOptions in only one map iteration */
+        const allCapitals = new Set();
+        const allCurrencies = new Set();
+        const allRegions = new Set();
 
-        /* Capital section */
-        const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
-        buildsQuestions.push(capitalQuestion);
+        res.map((e:any) => { 
+          allCapitals.add(e.capital[0]);
+          const currenciesObject: CurrenciesObject = e.currencies;
+          if (Object.keys(currenciesObject).length > 0) {
+            const namesPotentiallyNested = Object.values(currenciesObject).map((currency:CurrencyDetail) => currency.name);
+            const allNamesFlat = namesPotentiallyNested.flat(Infinity);
+            allNamesFlat.forEach(name => allCurrencies.add(name));
+          }
+          allRegions.add(e.region);
+        });
 
-        /* Region section */
-        const regionQuestion = buildRegionQuestion(randomCountryObject, res);
-        buildsQuestions.push(regionQuestion);
+        const capitals = Array.from(allCapitals) as string[];
+        const currencies = Array.from(allCurrencies) as string[];
+        const regions = Array.from(allRegions) as string[];
+    
+        buildsQuestions.push(QuestionFactory.createQuestion('capital', randomCountryObject, capitals));
+        buildsQuestions.push(QuestionFactory.createQuestion('currency', randomCountryObject, currencies));
+        buildsQuestions.push(QuestionFactory.createQuestion('region', randomCountryObject, regions));
 
         setQuestions(buildsQuestions);
         setUserAnswers(new Array(buildsQuestions.length).fill(undefined));
@@ -110,34 +116,6 @@ function Quiz() {
     };
 
     fetchData();
-
-    /*
-    // Remember uncomment the res import at the start of this file
-    const fetchLocalData = () =>{
-      const randomCountryObject = getRandomArrayElement(res);
-      const buildsQuestions:Ask[] = [];
-    
-      // Currency section 
-      const currencyQuestion = buildCurrencyQuestion(randomCountryObject, res);
-      buildsQuestions.push(currencyQuestion);
-
-      // Capital section 
-      const capitalQuestion = buildCapitalQuestion(randomCountryObject, res);
-      buildsQuestions.push(capitalQuestion);
-
-      // Region section 
-      const regionQuestion = buildRegionQuestion(randomCountryObject, res);
-      buildsQuestions.push(regionQuestion);
-
-      //... Other cuestions
-
-      setQuestions(buildsQuestions);
-      setUserAnswers(new Array(buildsQuestions.length).fill(undefined));
-      setLoading(false);
-    };
-    */
-
-    // fetchLocalData();
 
     return (()=> { // Clean states on destroy
       setLoading(true);

@@ -1,16 +1,17 @@
+import type { CurrenciesList } from "../interfaces/country";
 import Question from "./Question";
 
 export default class CurrencyQuestion extends Question {
-    constructor(country, currency) {
-      super(country);
-      this.currency = currency;
-    }
-  
-    getQuestionText() {
-      return `¿Cuál es la capital de ${this.country}?`;
-    }
-  
-    getCorrectAnswer() {
-      return this.capital;
-    }
+  constructor(countryObject:any, allOptions: string[]) {
+    
+    const countryCurrency = Object.values(countryObject.currencies as CurrenciesList)[0].name;
+
+    super(
+      'currency-question', 
+      `What currency ${countryObject.name.common} use?`,
+      allOptions,
+      countryCurrency
+    );      
+    
+  }
   }
